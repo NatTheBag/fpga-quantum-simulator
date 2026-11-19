@@ -113,7 +113,49 @@ module qc_core #(
                 state <= S_RD;
             end
 
-            
+            S_RD: begin // read of j
+                t <= 4'd0;
+                acc <= RND;
+                if (ctl_ok)
+                    state <= S_TA;
+                else if (last_pair) begin
+                    pc <= pc + 1'b1; state <= S_FETCH;
+                end else
+                    j <= j + 1'b1;
+            end
+
+            S_TA: state <= S_TB; 
+
+            S_TB: if (mq != 16'sd0) begin
+                M <= mq;
+                Q <= s_val;
+                A <= 17'sd0;
+                cnt <= 4'd0;
+                state <= S_MUL;
+            end
+
+            S_MUL: begin
+                A <= Asum >>>1
+                Q <= {Asum[0], Q[15:0]};
+                cnt <= cnt + 1'b1;
+                if (cnt == 4'd15) state <= S_ACC;
+            end
+
+            S_WR: begin
+                if (last_pair) begin pc <= pc + 1'b1;
+                state <= S_FETCH; end
+
+                else begin 
+                    j <= j + 1'b1;
+                    state <= S_RD; end
+            end
+
+            endcase
+        end
+    end
+endmodule
+
+
 
 
 
