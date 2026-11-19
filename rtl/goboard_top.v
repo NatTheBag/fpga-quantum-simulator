@@ -22,7 +22,7 @@ module goboard_top #(
     reg[1:0] rx_sync = 2'b11; 
     always @(posedge i_Clk) rx_sync <= {rx_sync[0], i_UART_RX}; // rx async from CLK, so store in reg until posedge
 
-    wire       rx_valid;
+    wire rx_valid;
     wire[7:0] rx_data;
     reg tx_start;
     reg[7:0] tx_data;
